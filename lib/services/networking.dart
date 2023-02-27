@@ -1,13 +1,17 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:climateapplication/utilites/constants.dart';
 
 class ApiManager {
-  static void getWetherData() async {
-    Uri url = Uri.https(baseUrl, "data/2.5/weather",
-        {"lat": 44.34, "lon": 10.99, "appid": apiKey});
-
-    http.Response responce = await http.get(url);
-
-    print(responce.statusCode);
+  static Future getWeatherData(double latitude, double longitude) async {
+    Uri url = Uri.https('api.openweathermap.org', '/data/2.5/weather', {
+      'lat': '$latitude',
+      'lon': '$longitude',
+      'appid': apiKey,
+    });
+    http.Response response = await http.get(url);
+    var decodedata = jsonDecode(response.body);
+    return decodedata;
   }
 }

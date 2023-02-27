@@ -1,4 +1,5 @@
 import 'package:climateapplication/screens/loading_screen.dart';
+import 'package:climateapplication/screens/location_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {

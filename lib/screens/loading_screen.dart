@@ -1,5 +1,9 @@
+import 'dart:convert';
+
+import 'package:climateapplication/screens/location_screen.dart';
 import 'package:climateapplication/services/networking.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 
@@ -11,29 +15,22 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
+  late double longitude;
+  late double latitude;
+
   @override
   void initState() {
     super.initState();
-    getData();
-  }
-
-  void getData() async {
-    Uri url = Uri.https('api.openweathermap.org', '/data/2.5/weather', {
-      'lat': '44.34',
-      'lon': '10.99',
-      'appid': 'a5b37fffd5dd637e8bd8a7455a5df7a3'
-    });
-    http.Response response = await http.get(url);
-    print(response.body);
+    getLocation();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: ElevatedButton(
-          onPressed: () {},
-          child: Text('Get Location'),
+        child: SpinKitRotatingCircle(
+          color: Colors.white,
+          size: 50.0,
         ),
       ),
     );
@@ -42,7 +39,15 @@ class _LoadingScreenState extends State<LoadingScreen> {
   void getLocation() async {
     Location location = Location();
     await location.getCurrentLocation();
-    print(location.longitude);
-    print(location.latitude);
+    longitude = location.longitude;
+    latitude = location.latitude;
+    var getWeatherdata = await ApiManager.getWeatherData(latitude, longitude);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LocationScreen(
+            locationWeather: getWeatherdata,
+          ),
+        ));
   }
 }
